@@ -1,0 +1,31 @@
+{
+  "name": "liusha-cli",
+  "version": "0.0.1",
+  "bin": {
+    "liusha": "dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liusha-labs/liusha-cli.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/liusha-labs/liusha-cli/issues"
+  },
+  "homepage": "https://github.com/liusha-labs/liusha-cli#readme",
+  "description": "",
+  "dependencies": {
+    "commander": "^14.0.0"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.12.0",
+    "@types/node": "^24.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
