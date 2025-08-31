@@ -9,9 +9,12 @@ program
   .version('0.0.1');
 
 program
-  .command('hello', 'print hello command', { executableFile: './commands/hello.js' });
+  .command('signup', 'signup with email and password', { executableFile: './commands/signup.js' });
 
 program
-  .command('world', 'print world command', { executableFile: './commands/world.js' });
+  .command('signin', 'signin with email and password', { executableFile: './commands/signin.js' });
+
+program
+  .command('orders', 'get orders list', { executableFile: './commands/orders.js' });
 
 program.parse(process.argv);
