@@ -9,6 +9,9 @@ program
   .version('0.0.1');
 
 program
+  .command('deploy', 'deploy static website', { executableFile: './commands/deploy.js' });
+
+program
   .command('signup', 'signup with email and password', { executableFile: './commands/signup.js' });
 
 program

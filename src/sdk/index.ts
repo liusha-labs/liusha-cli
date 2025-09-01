@@ -20,7 +20,7 @@ async function saveTokenToFile(token: string): Promise<void> {
   await fs.writeFile(tokenFilePath, token, 'utf8');
 }
 
-async function readTokenFromFile(): Promise<string | null> {
+export async function readTokenFromFile(): Promise<string | null> {
   try {
     const homeDir = os.homedir();
     const tokenFilePath = path.join(homeDir, '.liusha');
@@ -28,6 +28,23 @@ async function readTokenFromFile(): Promise<string | null> {
     return token.trim();
   } catch (error) {
     return null;
+  }
+}
+
+export async function anonymous() {
+  const res = await axios.post(`${baseURL}/api/auth/sign-in/anonymous`, {});
+  
+  if (res.status === 200) {
+    if (res.headers['set-cookie']) {
+      const sessionToken = extractSessionToken(res.headers['set-cookie']);
+      if (sessionToken) {
+        await saveTokenToFile(sessionToken);
+        console.log('Session token saved to ~/.liusha');
+      }
+    }
+    return { success: true };
+  } else {
+    return { success: false, message: res.data.message };
   }
 }
 
