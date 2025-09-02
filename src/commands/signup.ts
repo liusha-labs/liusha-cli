@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
 import prompts from 'prompts';
-import { signin } from '../sdk/index.js';
+import { signup } from '../sdk/index.js';
 
 const program = new Command();
 
 program
-  .description('signin liusha.com')
+  .description('signup account on liusha.com')
   .action(async () => {
     const response = await prompts([
       {
@@ -26,9 +26,10 @@ program
       process.exit(1);
     }
 
-    console.log(`signining with email ${response.email} ...`);
-    const res = await signin(response.email, response.password);
-    console.log(res)
+    console.log(`signuping with email ${response.email} ...`);
+    const res = await signup(response.email, response.password);
+    console.log(res);
+    console.log(`signin before you deploy your website`);
   });
 
 program.parse(process.argv);

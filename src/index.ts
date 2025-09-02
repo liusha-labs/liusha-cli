@@ -18,6 +18,9 @@ program
   .command('signin', 'signin with email and password', { executableFile: './commands/signin.js' });
 
 program
+  .command('signout', 'signout from liusha.com', { executableFile: './commands/signout.js' });
+
+program
   .command('orders', 'get orders list', { executableFile: './commands/orders.js' });
 
 program.parse(process.argv);

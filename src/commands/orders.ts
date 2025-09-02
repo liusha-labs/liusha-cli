@@ -7,14 +7,9 @@ const program = new Command();
 program
   .description('get orders')
   .action(async () => {
-    try {
-      console.log(`get orders list...`);
-      const res = await orders();
-      console.log(res)
-    } catch (error) {
-      console.error('get orders failed:', error);
-      process.exit(1);
-    }
+    console.log(`get orders list...`);
+    const res = await orders();
+    console.log(res)
   });
 
 program.parse(process.argv);

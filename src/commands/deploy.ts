@@ -1,24 +1,28 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { anonymous } from '../sdk/index.js';
-import { readTokenFromFile } from '../sdk/index.js';
+import { anonymous, project, readSignupedFile, readTokenFromFile } from '../sdk/index.js';
 
 const program = new Command();
 
 program
   .description('deploy website to liusha.dev')
   .action(async () => {
-    try {
-      // if cookie not exists then sigin with anonymous
+    const signuped = await readSignupedFile();
+    if (signuped) {
       const token = await readTokenFromFile();
       if (!token) {
-        const res = await anonymous();
+        console.log('You already signup an account, please signin first')
+      } else {
+        const res = await project('leo project', 'leo.liusha.dev', 'apkfreedown.com');
         console.log(res)
       }
-      // upload files to cloudflare workers
-    } catch (error) {
-      console.error('signin failed:', error);
-      process.exit(1);
+    } else {
+      const token = await readTokenFromFile();
+      if (!token) {
+        await anonymous()
+      }
+      const res = await project('leo project', 'leo.liusha.dev', 'apkfreedown.com');
+      console.log(res)
     }
   });
 
