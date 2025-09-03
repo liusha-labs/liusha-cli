@@ -160,8 +160,3 @@ export async function project(projectName: string, domain: string, customDomain:
   });
   return res.data;
 }
-
-export async function orders() {
-  const res = await apiClient.get('/api/v1/orders/list');
-  return res.data;
-}

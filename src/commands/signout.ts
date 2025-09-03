@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import { checkNodeVersion } from '../utils/version-check.js';
+checkNodeVersion();
+
 import { Command } from 'commander';
 import { signout } from '../sdk/index.js';
 

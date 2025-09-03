@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+import { checkNodeVersion } from '../utils/version-check.js';
+checkNodeVersion();
+
 import { Command } from 'commander';
 import prompts from 'prompts';
 import { signup } from '../sdk/index.js';
