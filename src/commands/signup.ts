@@ -1,16 +1,15 @@
 #!/usr/bin/env node
-import { checkNodeVersion } from '../utils/version-check.js';
-checkNodeVersion();
-
 import { Command } from 'commander';
 import prompts from 'prompts';
 import { signup } from '../sdk/index.js';
+import { analytics } from '../utils/analytics.js';
 
 const program = new Command();
 
 program
   .description('signup account on liusha.com')
   .action(async () => {
+    analytics.trackCommand('signup');
     const response = await prompts([
       {
         type: 'text',

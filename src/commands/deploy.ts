@@ -1,9 +1,7 @@
 #!/usr/bin/env node
-import { checkNodeVersion } from '../utils/version-check.js';
-checkNodeVersion();
-
 import { Command } from 'commander';
 import { anonymous, project, readSignupedFile, readTokenFromFile } from '../sdk/index.js';
+import { analytics } from '../utils/analytics.js';
 
 const program = new Command();
 
@@ -17,8 +15,7 @@ program
   .argument('<domain>', 'domain to use')
   .description('deploy website to liusha.dev')
   .action(async (path, domain) => {
-    console.log(program.opts())
-    console.log(path, domain)
+    analytics.trackCommand('deploy');
     const signuped = await readSignupedFile();
     if (signuped) {
       const token = await readTokenFromFile();
