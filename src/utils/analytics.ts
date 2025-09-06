@@ -53,7 +53,7 @@ class Analytics {
       {
         name: 'page_view',
         params: {
-          page_location: 'http://liusha.com/cli',
+          page_location: 'https://liusha.com/cli',
           page_title: 'liusha.com cli console',
           page_referrer: '',
           engagement_time_msec: '1000',

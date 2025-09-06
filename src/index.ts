@@ -15,7 +15,8 @@ program
   .command('deploy', 'deploy static website', { executableFile: './commands/deploy.js' })
   .command('signup', 'signup with email and password', { executableFile: './commands/signup.js' })
   .command('signin', 'signin with email and password', { executableFile: './commands/signin.js' })
-  .command('signout', 'signout from liusha.com', { executableFile: './commands/signout.js' });
+  .command('signout', 'signout from liusha.com', { executableFile: './commands/signout.js' })
+  .command('apikey', 'manage apikey from liusha.com', { executableFile: './commands/apikey.js' });
 
 let text = ` ⛅️ liusha ${pkgJson.version} `
 const maybeNewVersion = await updateCheck();

@@ -30,7 +30,6 @@ program
 
     console.log(`signining with email ${response.email} ...`);
     const res = await signin(response.email, response.password);
-    console.log(res)
   });
 
 program.parse(process.argv);

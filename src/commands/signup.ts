@@ -30,7 +30,6 @@ program
 
     console.log(`signuping with email ${response.email} ...`);
     const res = await signup(response.email, response.password);
-    console.log(res);
     console.log(`signin before you deploy your website`);
   });
 

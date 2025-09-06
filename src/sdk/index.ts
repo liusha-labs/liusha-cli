@@ -4,11 +4,14 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import * as os from 'os';
 
+const APIKEY = process.env.LIUSHA_API_KEY;
+
 const baseURL = 'https://dev-api-liusha-com.onebitbank.workers.dev';
+// const baseURL = 'http://localhost:8787';
 function extractSessionToken(setCookieHeader: string[]): string | null {
   for (const cookie of setCookieHeader) {
-    if (cookie.includes('__Secure-better-auth.session_token=')) {
-      const match = cookie.match(/__Secure-better-auth\.session_token=([^;]+)/);
+    if (cookie.includes('__Secure-liusha_token=')) {
+      const match = cookie.match(/__Secure-liusha_token=([^;]+)/);
       return match?.[1] ?? null;
     }
   }
@@ -52,13 +55,18 @@ const createApiClient = (): AxiosInstance => {
   // Request interceptor: Add token to Cookie header
   client.interceptors.request.use(
     async (config) => {
-      const token = await readTokenFromFile();
-      if (token) {
-        // Set cookie header
+      if (APIKEY) {
         config.headers = config.headers || {};
-        config.headers.Cookie = `__Secure-better-auth.session_token=${token}`;
+        config.headers['x-api-key'] = APIKEY;
+      } else {
+        const token = await readTokenFromFile();
+        if (token) {
+          // Set cookie header
+          config.headers = config.headers || {};
+          config.headers.Cookie = `__Secure-liusha_token=${token}`;
+        }
       }
-      return config;
+       return config;
     },
     (error) => {
       return Promise.reject(error);
@@ -68,50 +76,54 @@ const createApiClient = (): AxiosInstance => {
   // Response interceptor: Save token from set-cookie header and handle errors
   client.interceptors.response.use(
     async (response) => {
-      if (response.headers['set-cookie']) {
-        const sessionToken = extractSessionToken(response.headers['set-cookie']);
-        if (sessionToken) {
-          await saveTokenToFile(sessionToken);
+      if (!APIKEY) {
+        console.log(response.headers['set-cookie']);
+        if (response.headers['set-cookie']) {
+          const sessionToken = extractSessionToken(response.headers['set-cookie']);
+          if (sessionToken) {
+            await saveTokenToFile(sessionToken);
+          }
         }
       }
       return response;
     },
     async (error) => {
+      let message = '';
       if (axios.isAxiosError(error)) {
         if (error.response) {
           const { status, data } = error.response;
           // Handle different status codes
           switch (status) {
             case 400:
-              console.error('Bad Request:', data?.message || 'Invalid request parameters');
+              message = `Bad Request:, ${data?.message || 'Invalid request parameters'}`
               break;
             case 401:
-              console.error('Unauthorized:', data?.message || 'Authentication required');
+              message = `Unauthorized:, ${data?.message || 'Authentication required'}`;
               break;
             case 403:
-              console.error('Forbidden:', data?.message || 'Access denied');
+              message = `Forbidden:, ${data?.message || 'Access denied'}`;
               break;
             case 404:
-              console.error('Not Found:', data?.message || 'Resource not found');
+              message = `Not Found:, ${data?.message || 'Resource not found'}`;
               break;
             case 422:
-              console.error('Validation Error:', data?.message || 'Invalid input data');
+              message = `Validation Error:, ${data?.message || 'Invalid input data'}`;
               break;
             case 500:
-              console.error('Server Error:', data?.message || 'Internal server error');
+              message = `Server Error:, ${data?.message || 'Internal server error'}`;
               break;
             default:
-              console.error(`API Error ${status}:`, data?.message || data || 'Unknown error');
+              message = `API Error ${status}:, ${data?.message || data || 'Unknown error'}`;
           }
         } else if (error.request) {
-          console.error('Network Error: No response received from server');
+          message = 'Network Error: No response received from server';
         } else {
-          console.error('Request Error:', error.message);
+          message = `Request Error:, ${error.message}`;
         }
       } else {
-        console.error('Unexpected Error:', error.message || error);
+        message = `Unexpected Error:, ${error.message || error}`;
       }
-      return { data: { message: 'internal server error' } };
+      return { data: { message } };
     }
   );
 
@@ -158,5 +170,15 @@ export async function project(projectName: string, domain: string, customDomain:
     domain: domain,
     customDomain: customDomain,
   });
+  return res.data;
+}
+
+export async function apikeyCreate(name: string) {
+  const res = await apiClient.post('/api/v1/users/apiKey', { name });
+  return res.data;
+}
+
+export async function apikeyList() {
+  const res = await apiClient.get('/api/v1/users/apiKeys');
   return res.data;
 }
